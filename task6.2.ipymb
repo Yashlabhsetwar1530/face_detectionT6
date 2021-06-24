@@ -1,0 +1,205 @@
+
+Step 1 - Collect dataset by clicking your pics
+In [1]:
+import cv2, numpy
+
+#Loading HAAR face classifier
+face_classifier=cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
+
+# Function detects faces and returns the cropped face. If no face detected, it returns the input image
+def face_extractor(img):
+    gray=cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    faces=face_classifier.detectMultiScale(img, scaleFactor=1.3, minNeighbors=5)
+    
+    if faces is ():
+        return None
+        
+    # Crop all faces found
+    for (x,y,w,h) in faces:
+        cropped_face=img[y:y+h,x:x+w]
+    return cropped_face
+<>:11: SyntaxWarning: "is" with a literal. Did you mean "=="?
+<>:11: SyntaxWarning: "is" with a literal. Did you mean "=="?
+<ipython-input-1-ad8562117391>:11: SyntaxWarning: "is" with a literal. Did you mean "=="?
+  if faces is ():
+In [2]:
+# Initialize Webcam
+cap=cv2.VideoCapture(0)
+count=0
+In [3]:
+# Collect 100 samples of your face from webcam input
+while True:
+    ret,frame=cap.read()
+    
+    if face_extractor(frame) is not None:
+        count+=1
+        face=cv2.resize(face_extractor(frame), (200,200))
+        face=cv2.cvtColor(face,cv2.COLOR_BGR2GRAY)
+        
+        # Save file in specified directory with unique name
+        file_name_path='./faces/user2/' + str(count) + '.jpg'
+        cv2.imwrite(file_name_path,face)
+        
+        # Put count on images and display live count
+        cv2.putText(face, str(count), (50,50), cv2.FONT_HERSHEY_COMPLEX, 1,(0,255,0), 2 )
+        cv2.imshow("face cropper", face)
+        
+    else:
+        print("face not found")
+        
+    if cv2.waitKey(2) == 13 or count == 100:
+        break
+        
+
+cap.release()
+cv2.destroyAllWindows()      
+print("Collecting Samples Complete")
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+face not found
+Collecting Samples Complete
+In [ ]:
+cap.release()
+Step 2 - Train Model
+In [4]:
+import cv2, numpy, os
+path="./faces/user2/"
+
+# Get the training data we previously made
+data_path=path
+onlyfiles = [f for f in os.listdir(data_path) if os.path.isfile(os.path.join(data_path, f))]
+
+#print(onlyfiles)
+#print(type(onlyfiles))
+In [5]:
+# Create arrays for training data and labels
+Training_Data, Labels = [], []
+In [6]:
+# Open training images in our datapath. Create a numpy array for training data
+for i,files in enumerate(onlyfiles):
+    image_path=data_path + onlyfiles[i]
+    images = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+    Training_Data.append(numpy.asarray(images,dtype=numpy.uint8))
+    Labels.append(i)
+    
+# Create a numpy array for both training data and labels
+Labels=numpy.asarray(Labels,dtype=numpy.int32)
+In [7]:
+name=input("Enter your name: ")
+Enter your name: Krithika
+In [ ]:
+print("Model for "+name+" trained successfully") # ignore this
+In [8]:
+# Let's train our model 
+model_name=cv2.face_LBPHFaceRecognizer.create()
+model_name.train(numpy.asarray(Training_Data),numpy.asarray(Labels))
+print("Model "+name+" trained successfully")
+Model Krithika trained successfully
